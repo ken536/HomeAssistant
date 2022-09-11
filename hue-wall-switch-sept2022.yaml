@@ -22,6 +22,12 @@ blueprint:
       default: []
       selector:
         action:
+    on_triple1_action:
+      name: Switch1 - On Triple press Action
+      description: Action to perform when switch 1 is pressed three times
+      default: []
+      selector:
+        action:
     on_single2_action:
       name: Switch2 - On Single press action
       description: Action to perform when switch 2 is pressed once
@@ -31,6 +37,12 @@ blueprint:
     on_double2_action:
       name: Switch2 - On Double press Action
       description: Action to perform when switch 2 is pressed twice
+      default: []
+      selector:
+        action:
+    on_triple2_action:
+      name: Switch1 - On Triple press Action
+      description: Action to perform when switch 2 is pressed three times
       default: []
       selector:
         action:
