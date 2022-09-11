@@ -11,7 +11,7 @@ blueprint:
       selector:
         device:
           integration: hue
-    on_init1:
+    on_init1_action:
       name: Switch1 - On Initial Press Action
       description: Action to perform when switch 1 is pressed
       default: []
@@ -35,7 +35,7 @@ blueprint:
       default: []
       selector:
         action:
-    on_init2:
+    on_init2_action:
       name: Switch2 - On Initial Press Action
       description: Action to perform when switch 1 is pressed
       default: []
