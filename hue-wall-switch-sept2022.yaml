@@ -1,7 +1,6 @@
 blueprint:
   name: Hue Wall Switch
-  description: |
-    Makes control with Hue Wall Switch possible
+  description: Hue Wall Switch single,double and tripple press
   domain: automation
   source_url: https://github.com/ken536/HomeAssistant/
   input:
@@ -37,7 +36,6 @@ blueprint:
         action:
 
 
-mode: single
 
 trigger:
   - device_id: !input switch_device
@@ -53,7 +51,7 @@ trigger:
     subtype: 2
     id: on short_release2
 
-condition: []
+
 action:
     - wait_for_trigger:
         - platform: device
@@ -66,13 +64,11 @@ action:
     
     - choose:
         - conditions:
-         - condition: template
-           value_template: '{{ wait.trigger == none }}'
+            - condition: template
+              value_template: '{{ wait.trigger == none }}'
           sequence:
-            - choose:
-                - conditions:
 # single click
-                  sequence: !input on_single1_action
+            !input on_single1_action
       default:
         - wait_for_trigger:
             - platform: device
@@ -81,7 +77,7 @@ action:
               subtype: 1
           timeout:
             milliseconds: 1000
-       continue_on_timeout: true
+          continue_on_timeout: true
 # double click
         - choose:
             - conditions:
@@ -95,13 +91,3 @@ action:
 mode: single
         
 
-
-
-    default:
-      - service: persistent_notification.create
-        data:
-          message:
-            Hue wall switch ran default event from "choose" action on button press!
-            Please check any automations which may not be handling this event!
-          notification_id: hue_wall_switch_blueprint
-          title: Uncaught Wall Switch Command
