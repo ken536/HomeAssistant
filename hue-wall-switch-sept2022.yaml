@@ -3,7 +3,7 @@ blueprint:
   description: |
     Makes control with Hue Wall Switch possible
   domain: automation
-  source_url: 
+  source_url: https://github.com/ken536/HomeAssistant/
   input:
     switch_device:
       name: Wall Switch Device
