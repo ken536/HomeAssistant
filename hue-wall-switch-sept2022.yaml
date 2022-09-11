@@ -65,7 +65,7 @@ action:
       continue_on_timeout: true
     
     - choose:
-        -conditions:
+        - conditions:
          - condition: template
            value_template: '{{ wait.trigger == none }}'
           sequence:
