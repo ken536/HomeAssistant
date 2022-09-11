@@ -11,51 +11,27 @@ blueprint:
       selector:
         device:
           integration: hue
-    on_init1_action:
-      name: Switch1 - On Initial Press Action
-      description: Action to perform when switch 1 is pressed
+    on_single1_action:
+      name: Switch1 - On Single press action
+      description: Action to perform when switch 1 is pressed once
       default: []
       selector:
         action:
-    on_hold1_action:
-      name: Switch1 - On Hold Action
-      description: Action to perform when switch 1 is hold
+    on_double1_action:
+      name: Switch1 - On Double press Action
+      description: Action to perform when switch 1 is pressed twice
       default: []
       selector:
         action:
-    on_short1_action:
-      name: Switch1 - On Short Release Action
-      description: Action to perform when switch 1 is released after a short period
+    on_single2_action:
+      name: Switch2 - On Single press action
+      description: Action to perform when switch 2 is pressed once
       default: []
       selector:
         action:
-    on_long1_action:
-      name: Switch1 - On Long Release Action
-      description: Action to perform when switch 1 is released after a long period
-      default: []
-      selector:
-        action:
-    on_init2_action:
-      name: Switch2 - On Initial Press Action
-      description: Action to perform when switch 1 is pressed
-      default: []
-      selector:
-        action:
-    on_hold2_action:
-      name: Switch2 - On Hold Action
-      description: Action to perform when switch 1 is hold
-      default: []
-      selector:
-        action:
-    on_short2_action:
-      name: Switch2 - On Short Release Action
-      description: Action to perform when switch 1 is released after a short period
-      default: []
-      selector:
-        action:
-    on_long2_action:
-      name: Switch2 - On Long Release Action
-      description: Action to perform when switch 1 is released after a long period
+    on_double2_action:
+      name: Switch2 - On Double press Action
+      description: Action to perform when switch 2 is pressed twice
       default: []
       selector:
         action:
@@ -67,87 +43,59 @@ trigger:
   - device_id: !input switch_device
     domain: hue
     platform: device
-    type: initial_press
-    subtype: 1
-    id: on init1
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
-    type: repeat
-    subtype: 1
-    id: on hold1
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
     type: short_release
     subtype: 1
-    id: on short1
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
-    type: long_release
-    subtype: 1
-    id: on long1
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
-    type: initial_press
-    subtype: 2
-    id: on init2
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
-    type: repeat
-    subtype: 2
-    id: on hold2
+    id: on short_release1
   - device_id: !input switch_device
     domain: hue
     platform: device
     type: short_release
     subtype: 2
-    id: on short2
-  - device_id: !input switch_device
-    domain: hue
-    platform: device
-    type: long_release
-    subtype: 2
-    id: on long2
+    id: on short_release2
 
 condition: []
 action:
-  - choose:
-      - conditions:
-          - condition: trigger
-            id: on init1
-        sequence: !input on_init1_action
-      - conditions:
-          - condition: trigger
-            id: on hold1
-        sequence: !input on_hold1_action
-      - conditions:
-          - condition: trigger
-            id: on short1
-        sequence: !input on_short1_action
-      - conditions:
-          - condition: trigger
-            id: on long1
-        sequence: !input on_long1_action
-      - conditions:
-          - condition: trigger
-            id: on init2
-        sequence: !input on_init2_action
-      - conditions:
-          - condition: trigger
-            id: on hold2
-        sequence: !input on_hold2_action
-      - conditions:
-          - condition: trigger
-            id: on short2
-        sequence: !input on_short2_action
-      - conditions:
-          - condition: trigger
-            id: on long2
-        sequence: !input on_long2_action
+    - wait_for_trigger:
+        - platform: device
+          device_id: !input switch_device
+          type: short_release
+          subtype: 1
+      timeout:
+        milliseconds: 1000
+      continue_on_timeout: true
+    
+    - choose:
+        -conditions:
+         - condition: template
+           value_template: '{{ wait.trigger == none }}'
+          sequence:
+            - choose:
+                - conditions:
+# single click
+                  sequence: !input on_single1_action
+      default:
+        - wait_for_trigger:
+            - platform: device
+              device_id: !input switch_device
+              type: short_release
+              subtype: 1
+          timeout:
+            milliseconds: 1000
+       continue_on_timeout: true
+# double click
+        - choose:
+            - conditions:
+                - condition: template
+                  value_template: '{{ wait.trigger == none }}'
+              sequence: !input on_double1_action
+          default:
+# triple click
+            !input on_triple1_action
+
+mode: single
+        
+
+
 
     default:
       - service: persistent_notification.create
